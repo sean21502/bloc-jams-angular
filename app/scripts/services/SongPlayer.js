@@ -28,19 +28,33 @@
  
     		currentSong = song;
  			};
-		 
+		
+		function playsong(){
+        	currentBuzzObject.play();
+        	Song.playing = true;
+    		}		
+		
+/**
+ * @function play
+ * @desc Play current or new song
+ * @param {Object} song
+ */
+		
 		SongPlayer.play = function(song) {
 			if (currentSong !== song) {
 				setSong(song);
-         		currentBuzzObject.play();
-         		song.playing = true;
+         		playsong;
             } else if (currentSong === song) {
 				if (currentBuzzObject.isPaused()) {
-					currentBuzzObject.play();
+					playsong;
          		}
      		}
 		};
-		
+ /**
+ * @function pause
+ * @desc Pause current song
+ * @param {Object} song
+ */		
         currentBuzzObject = new buzz.sound(song.audioUrl, {
 			formats: ['mp3'],
             preload: true
@@ -55,7 +69,7 @@
 			currentBuzzObject.pause();
      		song.playing = false;
 		};
-			
+
 		return SongPlayer;
 	}
  
@@ -63,3 +77,4 @@
         .module('blocJams')
         .factory('SongPlayer', SongPlayer);
 })();
+
