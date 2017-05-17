@@ -45,6 +45,26 @@
             		SongPlayer.currentTime = currentBuzzObject.getTime();
          		});
      		});
+			
+		var songVolume = function (volume){
+			SongPlayer.volume;
+			SongPlayer.setVolume(50);
+			var value = scope.value;	
+			var max = scope.max;
+		};
+			
+			/*Add volume control to Bloc Jams. You'll need:
+A SongPlayer.volume attribute to hold the value of the volume.
+A SongPlayer.setVolume() method to update the volume on change. (The Buzz library has a setVolume method.)
+A value attribute on the directive element.
+A max attribute on the directive element. (The Buzz library sets volume on a scale from 0-100.)
+
+  var percentString = function () {
+            	var value = scope.value;
+                var max = scope.max;
+                var percent = value / max * 100;
+                return percent + "%";
+            	};*/
  
     		SongPlayer.currentSong = song;
  			};
