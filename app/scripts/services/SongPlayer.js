@@ -31,49 +31,33 @@
 		
 		var setSong = function(song) {
     		if (currentBuzzObject) {
-        	currentBuzzObject.stop();
-        	stopSong();
+        	stopSong(song);
     		}
  
-    		currentBuzzObject = new buzz.sound(song.audioUrl, {
+    			currentBuzzObject = new buzz.sound(song.audioUrl, {
         		formats: ['mp3'],
         		preload: true
-    		});
+    			});
 			
-			currentBuzzObject.bind('timeupdate', function() {
-         		$rootScope.$apply(function() {
-            		SongPlayer.currentTime = currentBuzzObject.getTime();
-         		});
-     		});
+				currentBuzzObject.bind('timeupdate', function() {
+         			$rootScope.$apply(function() {
+            			SongPlayer.currentTime = currentBuzzObject.getTime();
+         			});
+     			});
 			
-		var songVolume = function (volume){
-			SongPlayer.volume;
-			SongPlayer.setVolume(50);
-			var value = scope.value;	
-			var max = scope.max;
+				SongPlayer.currentSong = song;
 		};
-			
-			/*Add volume control to Bloc Jams. You'll need:
-A SongPlayer.volume attribute to hold the value of the volume.
-A SongPlayer.setVolume() method to update the volume on change. (The Buzz library has a setVolume method.)
-A value attribute on the directive element.
-A max attribute on the directive element. (The Buzz library sets volume on a scale from 0-100.)
-
-  var percentString = function () {
-            	var value = scope.value;
-                var max = scope.max;
-                var percent = value / max * 100;
-                return percent + "%";
-            	};*/
  
-    		SongPlayer.currentSong = song;
- 			};
-		
-		function playsong(){
+		var playSong = function(song){
         	currentBuzzObject.play();
-        	Song.playing = true;
-    		}		
+        	song.playing = true;
+    	};		
+	
 		
+		var stopSong = function(song){
+			currentBuzzObject.stop();
+			song.playing = false;
+			};
 /**
  * @function play
  * @desc Play current or new song
@@ -84,10 +68,10 @@ A max attribute on the directive element. (The Buzz library sets volume on a sca
 			song = song || SongPlayer.currentSong;
 			if (SongPlayer.currentSong !== song) {
 				setSong(song);
-         		playSong();
+         		playSong(song);
             } else if (SongPlayer.currentSong === song) {
 				if (currentBuzzObject.isPaused()) {
-					playSong();
+					playSong(song);
          		}
      		}
 		};
@@ -96,10 +80,10 @@ A max attribute on the directive element. (The Buzz library sets volume on a sca
 			song = song || SongPlayer.currentSong;
 			if (SongPlayer.currentSong !== song) {
 				setSong(song);
-         		stopSong();
+         		stopSong(song);
             } else if (SongPlayer.currentSong === song) {
 				if (currentBuzzObject.stop()) {
-					stopSong();
+					stopSong(song);
          		}
      		}
 		};
@@ -121,9 +105,8 @@ A max attribute on the directive element. (The Buzz library sets volume on a sca
      		var currentSongIndex = getSongIndex(SongPlayer.currentSong);
      		currentSongIndex--;
 			
-			if (currentSongIndex < 0) {
-				currentBuzzObject.stop();
-        		stopSong();
+			if (currentSongIndex <= 0) {
+        		stopSong(SongPlayer.currentSong);
 			} else {
          		var song = currentAlbum.songs[currentSongIndex];
          		setSong(song);
@@ -134,11 +117,11 @@ A max attribute on the directive element. (The Buzz library sets volume on a sca
 		
 		SongPlayer.next = function() {
      		var currentSongIndex = getSongIndex(SongPlayer.currentSong);
-     		currentSongIndex++;
+			var lastIndex = currentAlbum.songs.length - 1; 
+			currentSongIndex++;
 			
-			if (currentSongIndex < 0) {
-				currentBuzzObject.stop();
-        		stopSong();
+			if (currentSongIndex > lastIndex) {
+        		stopSong(SongPlayer.currentSong);
 			} else {
          		var song = currentAlbum.songs[currentSongIndex];
          		setSong(song);
@@ -157,9 +140,18 @@ A max attribute on the directive element. (The Buzz library sets volume on a sca
          	currentBuzzObject.setTime(time);
      		}
  		};
-
+		
+		SongPlayer.volume = 100;
+		SongPlayer.setVolume = function(volume){
+			var value = scope.value;
+			var max = scope.max;
+		};
+			
+		
 		return SongPlayer;
 	}
+	
+	
  
      angular
         .module('blocJams')
