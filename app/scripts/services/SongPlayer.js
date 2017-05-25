@@ -36,12 +36,14 @@
  
     			currentBuzzObject = new buzz.sound(song.audioUrl, {
         		formats: ['mp3'],
-        		preload: true
+        		preload: true,
+				volume: 50,
     			});
 			
 				currentBuzzObject.bind('timeupdate', function() {
          			$rootScope.$apply(function() {
             			SongPlayer.currentTime = currentBuzzObject.getTime();
+						
          			});
      			});
 			
@@ -141,13 +143,18 @@
      		}
  		};
 		
-		SongPlayer.volume = 100;
-		SongPlayer.setVolume = function(volume){
-			var value = scope.value;
-			var max = scope.max;
-		};
-			
 		
+		SongPlayer.volume = 50;
+		SongPlayer.setVolume = function(volume) {
+			
+			var value = 0;
+			var max = 100;
+			var volume =  max - value;
+			
+			if (currentBuzzObject) {
+				currentBuzzObject.setVolume(volume);
+			}
+		};
 		return SongPlayer;
 	}
 	
